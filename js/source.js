@@ -25,7 +25,7 @@ async function load(){
 
     //------------------------1. hero section-------------------------
     
-    const gameResponse = await fetch(`https://api.gamebrain.co/v1/games/${gameID}?api-key=${apiKey}`)
+    const gameResponse = await fetch(`https://api.gamebrain.co/v1/games/${gameID}?api-key=${apiKey}`);
     const gameObject = await gameResponse.json();
 
     //a. game title
@@ -41,8 +41,24 @@ async function load(){
     //e. genre
     document.querySelector(".game-genre").textContent = gameObject.genre;
 
+    //--------------------2. game news section--------------------------------
+    
+    const newsResponse = await fetch(`https://api.gamebrain.co/v1/games/${gameID}/news?api-key=${apiKey}`);
+    const newsObject = await newsResponse.json();
 
+    const newsCards = document.querySelectorAll(".news-card");
+    let i = 0;
+    for(const news of newsObject.news){
+      if(i >= 3){
+        break;
+      }
 
+      const newCard = newsCards[i];
+      newCard.querySelector("h3").textContent = news.title;      //a. news title
+      newCard.querySelector(".news-published").textContent = `Published ${formatYearFromStr(news.published)}`;   //b. news published year
+      newCard.querySelector("img").src = news.image;     //c.   news image
+      i++;
+    }
 }
 load();
 
