@@ -59,6 +59,27 @@ async function load(){
       newCard.querySelector("img").src = news.image;     //c.   news image
       i++;
     }
+
+    //----------------3. simlar games section-------------------------------
+
+    const similarResponse = await fetch(`https://api.gamebrain.co/v1/games/${gameID}/similar?api-key=${apiKey}`);
+    const similarObject = await similarResponse.json();
+    
+    const gameCardList = document.querySelectorAll(".game-card");
+    let index = 0;
+    for(const game of similarObject.results){
+      if(index >= 4){
+        break;
+      }
+
+      const newGameCard = gameCardList[index];
+      newGameCard.querySelector("h3").textContent = game.name;
+      const cardMeta = newGameCard.querySelectorAll(".game-card-meta span");
+      cardMeta[0].textContent = Math.floor(game.year);
+      cardMeta[1].textContent = formatPercentage(game.rating.mean);
+      newGameCard.querySelector("img").src = game.screenshots[0];
+      index++;
+    }
 }
 load();
 
